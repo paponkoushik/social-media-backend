@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Follow\FollowController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Routing\Router;
@@ -15,8 +16,6 @@ use Illuminate\Routing\Router;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::post('login', [AuthController::class, 'login']);
-Route::post('logout', [AuthController::class, 'logout']);
 
 Route::group(['prefix' => 'auth/'], function (Router $router) {
 
@@ -33,4 +32,24 @@ Route::group(['prefix' => 'auth/'], function (Router $router) {
     $router->middleware('auth:api')
         ->get('myself', [AuthController::class, 'mySelf'])
         ->name('myself');
+});
+
+Route::middleware('jwt.auth')->group(function (Router $router) {
+    $router->post('follow/{user}', [FollowController::class, 'follow'])
+        ->name('follow');
+
+    $router->post('unfollow/{user}', [FollowController::class, 'unfollow'])
+        ->name('unfollow');
+
+    $router->get('followers', [FollowController::class, 'ownFollowers'])
+        ->name('followers');
+
+    $router->get('following', [FollowController::class, 'authFollowing'])
+        ->name('following');
+
+    $router->get('followers/{user}', [FollowController::class, 'userFollowers'])
+        ->name('followers');
+
+    $router->get('following/{user}', [FollowController::class, 'userFollowing'])
+        ->name('following');
 });
