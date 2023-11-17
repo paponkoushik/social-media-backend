@@ -29,4 +29,8 @@ Route::group(['prefix' => 'auth/'], function (Router $router) {
     $router->middleware('jwt.auth')
         ->post('refresh', [AuthController::class, 'refresh'])
         ->name('refresh');
+
+    $router->middleware('auth:api')
+        ->get('myself', [AuthController::class, 'mySelf'])
+        ->name('myself');
 });

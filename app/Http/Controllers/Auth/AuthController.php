@@ -16,7 +16,7 @@ class AuthController extends Controller
     }
     public function login(Request $request): JsonResponse
     {
-        return $this->service->login($request->only('email', 'password'));
+        return $this->service->login($request->only('email_or_username', 'password'));
     }
     public function refresh(): JsonResponse
     {
@@ -26,5 +26,9 @@ class AuthController extends Controller
     {
         Auth::logout();
         return response()->json(['message' => 'Successfully logged out']);
+    }
+    public function myself(): JsonResponse
+    {
+        return response()->json(auth()->user());
     }
 }
