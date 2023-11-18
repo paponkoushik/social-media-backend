@@ -62,4 +62,7 @@ Route::middleware('jwt.auth')->group(function (Router $router) {
 
     $router->get('following-tweets', [TweetController::class, 'followingTweets'])
         ->name('followingTweets');
+
+    $router->post('/tweet/{tweet}/like', [TweetController::class, 'toggleLike'])
+        ->name('toggleLike');
 });
