@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Follow\FollowController;
 use App\Http\Controllers\Tweet\TweetController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Routing\Router;
@@ -66,6 +67,9 @@ Route::middleware('jwt.auth')->group(function (Router $router) {
     $router->get('suggest-tweets', [TweetController::class, 'suggestTweets'])
         ->name('suggestTweets');
 
-    $router->post('/tweet/{tweet}/like', [TweetController::class, 'toggleLike'])
+    $router->post('tweet/{tweet}/like', [TweetController::class, 'toggleLike'])
         ->name('toggleLike');
+
+    $router->get('users', [UserController::class, 'index'])
+        ->name('searchUsers');
 });
