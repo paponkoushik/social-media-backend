@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Follow\FollowController;
+use App\Http\Controllers\Tweet\TweetController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Routing\Router;
@@ -52,4 +53,13 @@ Route::middleware('jwt.auth')->group(function (Router $router) {
 
     $router->get('following/{user}', [FollowController::class, 'userFollowing'])
         ->name('following');
+
+    $router->post('/tweet', [TweetController::class, 'store'])
+        ->name('postTweet');
+
+    $router->get('tweets', [TweetController::class, 'index'])
+        ->name('getTweets');
+
+    $router->get('following-tweets', [TweetController::class, 'followingTweets'])
+        ->name('followingTweets');
 });
