@@ -3,12 +3,14 @@
 namespace App\Services\Tweet;
 
 use App\Http\Resources\Tweet\TweetResource;
+use App\Models\Follower;
 use App\Models\Tweet;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class TweetService
 {
+    protected $suggestAbleUser;
     public function followingTweets(): AnonymousResourceCollection
     {
         $followingTweets = auth()->user()
@@ -29,7 +31,7 @@ class TweetService
             'user_id' => auth()->id()
         ]);
 
-        return response()->json($tweet->load('user'), 201);
+        return response()->json($tweet, 201);
     }
 
     public function getOwnTweets(): AnonymousResourceCollection
@@ -55,5 +57,25 @@ class TweetService
         }
 
         return response()->json(['liked' => $liked]);
+    }
+
+    public function suggestAbleUser(): static
+    {
+        $followingIds = auth()->user()->following()->pluck('users.id');
+        $followersOfFollowed = Follower::whereIn('follower_id', $followingIds)->pluck('user_id');
+
+        $this->suggestAbleUser = $followingIds->merge($followersOfFollowed);
+
+        return $this;
+    }
+
+    public function suggestAbleUserTweets(): AnonymousResourceCollection
+    {
+        $tweets = Tweet::query()->whereIn('user_id', $this->suggestAbleUser)
+            ->with('user', 'likes.user')
+            ->latest()
+            ->get();
+
+        return TweetResource::collection($tweets);
     }
 }

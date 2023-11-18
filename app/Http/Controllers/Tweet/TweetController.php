@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tweet;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tweet\TweetRequest;
+use App\Models\Follower;
 use App\Models\Tweet;
 use App\Services\Tweet\TweetService;
 use Illuminate\Http\JsonResponse;
@@ -29,6 +30,11 @@ class TweetController extends Controller
     public function store(TweetRequest $request): JsonResponse
     {
         return $this->service->storeTweet($request->only('content'));
+    }
+
+    public function suggestTweets(): AnonymousResourceCollection
+    {
+        return $this->service->suggestAbleUser()->suggestAbleUserTweets();
     }
 
     public function toggleLike(Tweet $tweet): JsonResponse
