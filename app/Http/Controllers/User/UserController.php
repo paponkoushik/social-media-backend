@@ -21,4 +21,9 @@ class UserController extends Controller
     {
         return $this->service->searchUsers($request);
     }
+
+    public function show(User $user)
+    {
+        return response()->json($user->load('followers', 'following', 'tweets.likes'));
+    }
 }

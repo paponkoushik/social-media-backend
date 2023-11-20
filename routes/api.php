@@ -72,4 +72,7 @@ Route::middleware('jwt.auth')->group(function (Router $router) {
 
     $router->get('users', [UserController::class, 'index'])
         ->name('searchUsers');
+
+    $router->get('get-user-info/{user}', [UserController::class, 'show'])
+        ->name('showUser');
 });
