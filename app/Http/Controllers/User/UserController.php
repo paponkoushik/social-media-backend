@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserInfo\UserInfoResource;
 use App\Models\User;
 use App\Services\User\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
 {
@@ -22,8 +24,14 @@ class UserController extends Controller
         return $this->service->searchUsers($request);
     }
 
-    public function show(User $user)
+    public function show(User $user): AnonymousResourceCollection
     {
-        return response()->json($user->load('followers', 'following', 'tweets.likes'));
+        return UserInfoResource::collection(
+            User::query()
+                ->where('id', $user->id)
+                ->with(['followers', 'following', 'tweets.user', 'tweets.likes.user'])
+                ->get()
+        );
+
     }
 }

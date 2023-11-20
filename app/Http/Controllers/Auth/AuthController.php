@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserInfo\UserInfoResource;
+use App\Models\User;
 use App\Services\Auth\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
@@ -27,8 +30,13 @@ class AuthController extends Controller
         Auth::logout();
         return response()->json(['message' => 'Successfully logged out']);
     }
-    public function myself(): JsonResponse
+    public function myself(): AnonymousResourceCollection
     {
-        return response()->json(auth()->user());
+        return UserInfoResource::collection(
+            User::query()
+                ->where('id', auth()->user()->id)
+                ->with(['followers', 'following', 'tweets.user', 'tweets.likes.user'])
+                ->get()
+        );
     }
 }
