@@ -27,7 +27,7 @@ Route::group(['prefix' => 'auth/'], function (Router $router) {
     $router->post('logout', [AuthController::class, 'logout'])
         ->name('logout');
 
-    $router->middleware('jwt.auth')
+    $router->middleware('jwt.authenticate')
         ->post('refresh', [AuthController::class, 'refresh'])
         ->name('refresh');
 

@@ -30,10 +30,6 @@ class AuthService
 
     protected function respondWithToken($token): JsonResponse
     {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => config('jwt.ttl') * 60,
-        ]);
+        response()->json(['success'=> true, 'token' => $token, 'status' => 'New'], 200);
     }
 }
